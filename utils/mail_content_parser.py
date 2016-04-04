@@ -4,11 +4,10 @@ from email.header import decode_header
 from email.utils import parseaddr
 
 
-class MailContentParser(Parser):
+class MailContentParser(object):
 
     def __init__(self, data):
-        super(MailContentParser, self).__init__()
-        self.data = self.parsestr(data)
+        self.data = Parser().parsestr(data)
         self.d = {}
         self.content = []
         self.parse_data(self.data)
@@ -19,7 +18,6 @@ class MailContentParser(Parser):
     def __setitem__(self, key, value):
         self.k[key] = value
 
-    # indent用于缩进显示:
     def parse_data(self, msg, is_sub_obj=False):
         if is_sub_obj == 0:
             # 邮件的From, To, Subject存在于根对象上:

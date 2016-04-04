@@ -40,7 +40,7 @@ class MailAutoReplyServer(object):
         port = port or self.port
         address = address or self.address
 
-        log.warn('Starting SMTP server at {0}:{1}'.format(address, port))
+        log.info('Starting SMTP server at {0}:{1}'.format(address, port))
 
         MailboxServer(self.collator, (address, port), None)
 
