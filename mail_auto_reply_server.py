@@ -15,9 +15,10 @@ class MailboxServer(smtpd.SMTPServer, object):
         self._handler = handler
 
     def process_message(self, peer, mailfrom, rcpttos, data):
-        print "收件人：", peer[0]
-        print "发件人：", mailfrom
         subject = Parser().parsestr(data)['subject']
+        print "收件人：", rcpttos[0]
+        print "发件人：", mailfrom
+        print "标题：", subject
         return self._handler(
             to=rcpttos,
             sender=mailfrom,
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     @marserv.collate
     def handler(to, sender, subject, body):
         data = Parser().parsestr(body)
-        pprint(data)
+        print data
 
     # Bind directly.
     marserv.serve(address='0.0.0.0', port=25)
