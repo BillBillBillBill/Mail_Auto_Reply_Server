@@ -3,6 +3,7 @@ import smtpd
 import asyncore
 import re
 import requests
+import json
 from utils.logger import logger as log
 from utils.mail_content_parser import MailContentParser
 
@@ -62,7 +63,7 @@ if __name__ == '__main__':
 
     @marserv.collate
     def handler(to, sender, subject, body):
-        content = "收件人：%s\n发件人：%s\n标题：%s\n 内容：%r" % (to, sender, subject, body)
+        content = "收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % (to, sender, subject, json.dumps(body))
         log.info(content)
         log.info(separator1)
 
