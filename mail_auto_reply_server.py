@@ -66,7 +66,7 @@ if __name__ == '__main__':
         try:
             content = u"收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % (to, sender, subject, json.dumps(body))
             log.info(content)
-            log.info(separator1)
+            log.info(separator1*4)
 
             urls = []
             for content in body:
@@ -76,9 +76,13 @@ if __name__ == '__main__':
             log.info(u"发现%d个链接" % len(urls))
             # open them
             for url in urls:
-                ret = requests.get(url)
-                log.info(u"url: %s  status: %s" % (url, ret.status_code))
-            log.info(separator2)
+                try:
+                    ret = requests.get(url)
+                    status = ret.status_code
+                except Exception, e:
+                    status = e.message
+                log.info(u"url: %s  status: %s" % (url, status))
+            log.info(separator2*4)
         except Exception, e:
             log.error(e.message)
 
