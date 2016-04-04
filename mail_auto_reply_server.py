@@ -4,6 +4,7 @@ import smtpd
 import asyncore
 import logging as log
 from email.parser import Parser
+from pprint import pprint
 
 
 class MailboxServer(smtpd.SMTPServer, object):
@@ -14,7 +15,8 @@ class MailboxServer(smtpd.SMTPServer, object):
         self._handler = handler
 
     def process_message(self, peer, mailfrom, rcpttos, data):
-        print peer, mailfrom, rcpttos, data
+        print "收件人：", peer[0]
+        print "发件人：", mailfrom
         subject = Parser().parsestr(data)['subject']
         return self._handler(
             to=rcpttos,
@@ -58,7 +60,8 @@ if __name__ == '__main__':
 
     @marserv.collate
     def handler(to, sender, subject, body):
-        print to, sender, subject, body
+        data = Parser().parsestr(body)
+        pprint(data)
 
     # Bind directly.
     marserv.serve(address='0.0.0.0', port=25)
