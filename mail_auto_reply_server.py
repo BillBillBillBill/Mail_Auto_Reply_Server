@@ -47,14 +47,14 @@ class MailAutoReplyServer(object):
         port = port or self.port
         address = address or self.address
 
-        log.info('Starting SMTP server at {0}:{1}'.format(address, port))
+        log.info(u'Starting SMTP server at {0}:{1}'.format(address, port))
 
         MailboxServer(self.collator, (address, port), None)
 
         try:
             asyncore.loop()
         except KeyboardInterrupt:
-            log.info('Cleaning up')
+            log.info(u'Cleaning up')
 
 
 if __name__ == '__main__':
@@ -63,21 +63,24 @@ if __name__ == '__main__':
 
     @marserv.collate
     def handler(to, sender, subject, body):
-        content = "收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % (to, sender, subject, json.dumps(body))
-        log.info(content)
-        log.info(separator1)
+        try:
+            content = u"收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % (to, sender, subject, json.dumps(body))
+            log.info(content)
+            log.info(separator1)
 
-        urls = []
-        for content in body:
-            if content[0] == 'Text':
-                # find all url
-                urls += re.findall('href="(http://.*?)"', content[1])
-        log.info("发现%d个链接" % len(urls))
-        # open them
-        for url in urls:
-            ret = requests.get(url)
-            log.info("url: %s  status: %s" % (url, ret.status_code))
-        log.info(separator2)
+            urls = []
+            for content in body:
+                if content[0] == 'Text':
+                    # find all url
+                    urls += re.findall('href="(http://.*?)"', content[1])
+            log.info(u"发现%d个链接" % len(urls))
+            # open them
+            for url in urls:
+                ret = requests.get(url)
+                log.info(u"url: %s  status: %s" % (url, ret.status_code))
+            log.info(separator2)
+        except Exception, e:
+            log.error(e.message)
 
     # Bind directly.
     marserv.serve(address='0.0.0.0', port=25)
