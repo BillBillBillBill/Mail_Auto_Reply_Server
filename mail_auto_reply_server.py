@@ -1,8 +1,14 @@
 # coding: utf-8
 import smtpd
 import asyncore
-import logging as log
+import re
+import requests
+from utils.logger import logger as log
 from utils.mail_content_parser import MailContentParser
+
+
+separator1 = "------------------------------------------------------------"
+separator2 = "============================================================"
 
 
 class MailboxServer(smtpd.SMTPServer, object):
@@ -56,10 +62,21 @@ if __name__ == '__main__':
 
     @marserv.collate
     def handler(to, sender, subject, body):
-        print "收件人：", to
-        print "发件人：", sender
-        print "标题：", subject
-        print body
+        content = "收件人：%s\n发件人：%s\n标题：%s\n 内容：%r" % (to, sender, subject, body)
+        log.info(content)
+        log.info(separator1)
+
+        urls = []
+        for content in body:
+            if content[0] == 'Text':
+                # find all url
+                urls += re.findall('href="(http://.*?)"', content[1])
+        log.info("发现%d个链接" % len(urls))
+        # open them
+        for url in urls:
+            ret = requests.get(url)
+            log.info("url: %s  status: %s" % (url, ret.status_code))
+        log.info(separator2)
 
     # Bind directly.
     marserv.serve(address='0.0.0.0', port=25)
