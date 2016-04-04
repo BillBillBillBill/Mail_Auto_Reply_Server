@@ -1,3 +1,4 @@
+# coding: utf-8
 from email.parser import Parser
 from email.header import decode_header
 from email.utils import parseaddr

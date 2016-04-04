@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
+# coding: utf-8
 import smtpd
 import asyncore
 import logging as log
-from email.parser import Parser
 from utils.mail_content_parser import MailContentParser
-
 
 
 class MailboxServer(smtpd.SMTPServer, object):
