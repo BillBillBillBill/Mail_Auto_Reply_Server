@@ -13,10 +13,10 @@ class MailContentParser(object):
         self.parse_data(self.data)
 
     def __getitem__(self, key):
-        return self.k[key]
+        return self.d[key]
 
     def __setitem__(self, key, value):
-        self.k[key] = value
+        self.d[key] = value
 
     def parse_data(self, msg, is_sub_obj=False):
         if is_sub_obj == 0:
