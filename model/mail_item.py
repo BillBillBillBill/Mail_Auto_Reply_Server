@@ -3,6 +3,9 @@ import mongoengine as m
 import config
 
 
+config.using_db()
+
+
 class MailItem(m.Document):
     sender = m.StringField(required=True)
     to = m.StringField(required=True)

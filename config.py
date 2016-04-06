@@ -1,9 +1,10 @@
 import mongoengine
 
 
-mongoengine.register_connection(
-    "marserv",
-    "marserv",
-    host="localhost",
-    port=27017
-)
+def using_db(alias="marserv", name="marserv"):
+    mongoengine.register_connection(
+        alias,
+        name,
+        host="localhost",
+        port=27017
+    )
