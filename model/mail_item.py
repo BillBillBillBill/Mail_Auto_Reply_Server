@@ -1,9 +1,5 @@
 # coding: utf-8
-import mongoengine as m
-import config
-
-
-config.using_db()
+from conn import m
 
 
 class MailItem(m.Document):
