@@ -4,7 +4,7 @@ import requests
 import json
 from mail_auto_reply_server import MailAutoReplyServer
 from utils.logger import logger as log
-from model.mail_item import MailItem
+from model.mail_item import MailItem, BadMailItem
 
 separator1 = "------------------------------------------------------------"
 separator2 = "============================================================"
@@ -17,7 +17,10 @@ def handler(to, sender, subject, body, raw_data):
     try:
         content = u"收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % \
                 (to, sender, subject, json.dumps(body))
-        mail_item = MailItem(sender, to, subject, json.dumps(body), raw_data)
+        if to.endswith("marserv.cn"):
+            mail_item = MailItem(sender, to, subject, json.dumps(body), raw_data)
+        else:
+            mail_item = BadMailItem(sender, to, subject, json.dumps(body), raw_data)
         mail_item.save()
         log.info(content)
         log.info(separator1*4)

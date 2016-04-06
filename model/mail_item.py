@@ -8,3 +8,11 @@ class MailItem(m.Document):
     subject = m.StringField(required=True)
     content = m.StringField(required=True)
     raw_data = m.StringField(required=True)
+
+
+class BadMailItem(m.Document):
+    sender = m.StringField(required=True)
+    to = m.StringField(required=True)
+    subject = m.StringField(required=True)
+    content = m.StringField(required=True)
+    raw_data = m.StringField(required=True)
