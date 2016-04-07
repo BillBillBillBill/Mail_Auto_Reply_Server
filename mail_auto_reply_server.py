@@ -18,7 +18,8 @@ class MailboxServer(smtpd.SMTPServer, object):
             to=mcp["To"],
             sender=mcp["From"],
             subject=mcp["Subject"],
-            body=mcp.content,
+            text=mcp.text,
+            attachs=mcp.attachs,
             raw_data=data
         )
 

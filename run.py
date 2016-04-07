@@ -12,26 +12,33 @@ separator2 = "============================================================"
 
 marserv = MailAutoReplyServer()
 
+
 @marserv.collate
-def handler(to, sender, subject, body, raw_data):
+def handler(to, sender, subject, text, attachs, raw_data):
     try:
         content = u"收件人：%s\n发件人：%s\n标题：%s\n 内容：%s" % \
-                (to, sender, subject, json.dumps(body))
-        if to.endswith("marserv.cn"):
-            mail_item = MailItem(sender, to, subject, json.dumps(body), raw_data)
-        else:
-            mail_item = BadMailItem(sender, to, subject, json.dumps(body), raw_data)
+                (to, sender, subject, json.dumps(text))
+        MailCls = MailItem if to.endswith("marserv.cn") else BadMailItem
+        mail_item = MailCls(
+            sender,
+            to,
+            subject,
+            "\n\n".join(text),
+            json.dumps(attachs),
+            raw_data
+        )
         mail_item.save()
+
         log.info(content)
         log.info(separator1*4)
 
         urls = []
-        for content in body:
-            if content[0] == 'Text':
-                # find all url
-                urls += re.findall('href="(http://.*?)"', content[1])
+        for content in text:
+            # find all url
+            urls += re.findall('href="(http://.*?)"', content[1])
         log.info(u"发现%d个链接" % len(urls))
-        # open them
+
+        # open the urls
         for url in urls:
             try:
                 ret = requests.get(url)
@@ -40,6 +47,7 @@ def handler(to, sender, subject, body, raw_data):
                 status = e.message
             log.info(u"url: %s  status: %s" % (url, status))
         log.info(separator2*4)
+
     except Exception, e:
         log.error(e.message)
 

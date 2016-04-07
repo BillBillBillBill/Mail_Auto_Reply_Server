@@ -9,7 +9,8 @@ class MailContentParser(object):
     def __init__(self, data):
         self.data = Parser().parsestr(data)
         self.d = {}
-        self.content = []
+        self.text = []
+        self.attachs = []
         self.parse_data(self.data)
 
     def __getitem__(self, key):
@@ -52,10 +53,11 @@ class MailContentParser(object):
                 charset = self.guess_charset(msg)
                 if charset:
                     content = content.decode(charset)
-                self.content.append(("Text", content))
+                self.text.append(("Text", content))
             else:
                 # 不是文本,作为附件处理:
-                self.content.append(("Attachment", content_type))
+                content = msg.get_payload()
+                self.attachs.append((content_type, content))
 
     def decode_str(self, s):
         value, charset = decode_header(s)[0]
